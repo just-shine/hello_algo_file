@@ -8,9 +8,7 @@
 //键值对 int -> string
 typedef struct {
     int key;
-    //char *val;
 	char val[MAX_SIZE];
-	
 }Pair;
 //链表节点
 typedef struct Node{
@@ -73,7 +71,7 @@ char *get(HashMapChaining *HashMap,int key){
         }
         cur = cur->next;
     }
-    return " ";//若未找到key,则返回空字符串
+    return "";//若未找到key,则返回空字符串
 }
 //添加操作
 void put(HashMapChaining *HashMap,int key,const char* val){
@@ -82,7 +80,7 @@ void put(HashMapChaining *HashMap,int key,const char* val){
     if(loadFactor(HashMap) > HashMap->loadThres){
         extend(HashMap);
     }
-    int index = hashFunc(HashMap,key);
+    int index = hashFunc(HashMap,key);//
     //遍历桶,若遇到指定key,则更新对应val 并返回
     Node *cur = HashMap->buckets[index];
     while (cur){
@@ -96,9 +94,11 @@ void put(HashMapChaining *HashMap,int key,const char* val){
     Pair *newPair = (Pair*) malloc(sizeof(Pair));
     newPair->key = key;
     strcpy(newPair->val,val);
+
     Node *newNode = (Node*) malloc(sizeof (Node));
     newNode->pair = newPair;
     newNode->next = HashMap->buckets[index];
+
     HashMap->buckets[index] = newNode;
     HashMap->size++;
 }
@@ -120,7 +120,9 @@ void extend(HashMapChaining *HashMap){
     for(int i = 0;i< oldCapacity;i++){
         Node *cur = oldBuckets[i];
         while (cur){
+            //将原数据插入
             put(HashMap,cur->pair->key,cur->pair->val);
+            //指向该桶的下一个地址
             Node *temp = cur;
             cur = cur->next;
             //释放内存
